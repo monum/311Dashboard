@@ -12,14 +12,12 @@ Install Dependencies
 --------------------
 1. `sudo apt-get update`
 2. `sudo apt-get install binutils gdal-bin libproj-dev postgresql-9.1-postgis postgresql-server-dev-9.1 python-psycopg2`
-3. `sudo apt-get install gdal-bin`
-4. You will also need pip if you don't have it:
+3. You will also need pip if you don't have it:
     - `sudo apt-get install python-pip`
     - `sudo pip install --upgrade pip`
-5. Install the python dependencies:
+4. Install Flask with:
     - `sudo pip install Flask`
-    - `sudo pip install psycopg2`
-6. If you want to use Memcached with this application:
+5. If you want to use Memcached with this application:
     - `sudo apt-get install memcached`
     - `sudo pip install python-memcached`
 
@@ -41,8 +39,8 @@ Create a 311 database with the correct user
 
 Set up the database with a PostGIS template
 -------------------------------------------
-1. `psql -U sf_311 -d sf_311 -f /usr/share/postgresql/9.1/contrib/postgis-2.1/postgis.sql`
-2. `psql -U sf_311 -d sf_311 -f /usr/share/postgresql/9.1/contrib/postgis-2.1/spatial_ref_sys.sql`
+1. `psql -U sf_311 -d sf_311 -f /usr/share/postgresql/9.1/contrib/postgis-1.5/postgis.sql`
+2. `psql -U sf_311 -d sf_311 -f /usr/share/postgresql/9.1/contrib/postgis-1.5/spatial_ref_sys.sql`
 
 Get the neighborhood data
 -------------------------
@@ -55,11 +53,11 @@ Get the neighborhood data
 Convert the shapefile to web mercator
 -------------------------------------
 0. `ogrinfo -so planning_neighborhoods.shp`
-1. `ogr2ogr -f 'ESRI Shapefile' -t_srs EPSG:900913 planning_neighborhoods_900913.shp planning_neighborhoods.shp`
+1. `ogr2ogr -f 'ESRI Shapefile' -t_srs EPSG:4326 planning_neighborhoods_4326.shp planning_neighborhoods.shp`
 
 Import the Shapefile into a PostGIS-enabled database
 ----------------------------------------------------
-1. `shp2pgsql -dID -s 900913 -W latin1 planning_neighborhoods_900913.shp pn_geoms | psql -U sf_311`
+1. `shp2pgsql -dID -g geom -s 4326 -W latin1 planning_neighborhoods_4326.shp pn_geoms | psql -U sf_311`
 
 Note: The neighborhoods should already be indexed. This is how you would index the geometries:
 `CREATE INDEX pn_geoms_gist ON pn_geoms USING GIST (geom);`
