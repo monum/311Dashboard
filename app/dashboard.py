@@ -233,7 +233,7 @@ def neighborhoods_list():
         SELECT 
             COUNT(r.*) as count, p.neighborho 
         FROM sf_requests as r 
-        JOIN pn_geoms as p ON ST_INTERSECTS(geom, ST_MakePoint(r.lon,r.lat))
+        JOIN pn_geoms as p ON ST_INTERSECTS(geom, ST_SetSRID(ST_MakePoint(r.lon,r.lat), 4326))
         WHERE r.requested_datetime between now() - INTERVAL '30 DAY' and now() 
         GROUP BY p.neighborho order by count DESC
     """)
@@ -322,7 +322,7 @@ def daily_count_by_neighborhood():
             SELECT 
                 CAST(DATE(r.requested_datetime) as text) as date, COUNT(r.*), r.status
             FROM sf_requests as r
-            JOIN pn_geoms as p ON ST_INTERSECTS(geom, ST_MakePoint(r.lon,r.lat))
+            JOIN pn_geoms as p ON ST_INTERSECTS(geom, ST_SetSRID(ST_MakePoint(r.lon,r.lat), 4326))
             WHERE p.neighborho=(%s) AND DATE(r.requested_datetime) BETWEEN (%s) AND (%s) AND status='Open'
             GROUP BY date, r.status
             ORDER BY date ASC
@@ -335,7 +335,7 @@ def daily_count_by_neighborhood():
                 SELECT 
                     CAST(DATE(r.updated_datetime) as text) as date, COUNT(r.*), r.status
                 FROM sf_requests as r
-                JOIN pn_geoms as p ON ST_INTERSECTS(geom, ST_MakePoint(r.lon,r.lat))
+                JOIN pn_geoms as p ON ST_INTERSECTS(geom, ST_SetSRID(ST_MakePoint(r.lon,r.lat), 4326))
                 WHERE p.neighborho=(%s) AND DATE(r.updated_datetime) BETWEEN (%s) AND (%s) AND status='Closed'
                 GROUP BY date, r.status
                 ORDER BY date ASC
@@ -443,7 +443,7 @@ def calculate_avg_resp_time(neighborhood=None):
                 AVG((EXTRACT(Epoch from r.updated_datetime - r.requested_datetime)/3600)::Integer) AS "avg_response_time"
             FROM sf_requests as r
             JOIN pn_geoms as p
-            ON ST_INTERSECTS(geom, ST_MakePoint(r.lon,r.lat))
+            ON ST_INTERSECTS(geom, ST_SetSRID(ST_MakePoint(r.lon,r.lat), 4326))
             WHERE p.neighborho=(%s) AND r.status='Closed' AND r.requested_datetime BETWEEN (%s) and (%s)
         """, (neighborhood,start_date,end_date))
         
@@ -751,7 +751,7 @@ def get_neighborhood_sc_counts_by_range():
             p.neighborho as neigh, CAST(DATE(r.requested_datetime) as text) as r_dt, 
             r.service_code as sc, COUNT(r.service_code) as count
         FROM sf_requests as r
-        JOIN pn_geoms as p ON ST_INTERSECTS(geom, ST_MakePoint(r.lon,r.lat))
+        JOIN pn_geoms as p ON ST_INTERSECTS(geom, ST_SetSRID(ST_MakePoint(r.lon,r.lat), 4326))
         WHERE DATE(r.requested_datetime) between (%s) and (%s) 
         GROUP by neigh, r_dt, sc
         ORDER by r_dt DESC
@@ -817,7 +817,7 @@ def get_neighborhood_counts_by_range():
         SELECT 
             p.neighborho as neigh, CAST(DATE(r.requested_datetime)AS text) as r_dt, COUNT(r.service_code) AS count 
         FROM sf_requests as r
-        JOIN pn_geoms as p ON ST_INTERSECTS(geom, ST_MakePoint(r.lon,r.lat))
+        JOIN pn_geoms as p ON ST_INTERSECTS(geom, ST_SetSRID(ST_MakePoint(r.lon,r.lat), 4326))
         WHERE DATE(r.requested_datetime) BETWEEN (%s) AND (%s) 
         GROUP by neigh, r_dt
         ORDER by r_dt DESC
@@ -858,7 +858,7 @@ def get_category_counts_by_period():
             SELECT 
                 r.category, COUNT(r.category) as count
             FROM sf_requests as r
-            JOIN pn_geoms as p ON ST_INTERSECTS(geom, ST_MakePoint(r.lon,r.lat))
+            JOIN pn_geoms as p ON ST_INTERSECTS(geom, ST_SetSRID(ST_MakePoint(r.lon,r.lat), 4326))
             WHERE DATE(r.requested_datetime) BETWEEN (%s) and (%s) and p.neighborho=(%s)
             GROUP BY category;
         """, (start_date,end_date,neighborhood)) 
