@@ -1,0 +1,11 @@
+{
+    "Pothole": {"category": "Sidewalk or Street"},
+    "Streetlight": {"category": "Sidewalk or Street"},
+    "Graffiti": {"category": "Defacement/Graffiti"},
+    "Pothole": {"category": "Sidewalk or Street"},
+    "Sidewalk Patch": {"category": "Sidewalk or Street"},
+    "Damaged Sign" : {"category": "Signs"},
+    "Roadway Plowing/Sanding" : {"category": "Snow"},
+    "Unshoveled Sidewalk": {"category": "Snow"},
+    "Other": {"category": "Other"}
+}
