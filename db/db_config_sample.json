@@ -1,5 +1,8 @@
 {
-	"base_url": "https://open311.sfgov.org/Open311/v2/requests.xml",
+	"base_url":     {
+	    "boston":"https://mayors24.cityofboston.gov/open311/v2/requests.json",
+	    "san francisco": "https://open311.sfgov.org/Open311/v2/requests.xml"
+	},
 	
 	"DATABASE":	{
 		"host": "localhost",
