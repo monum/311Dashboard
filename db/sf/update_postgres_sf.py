@@ -1,13 +1,12 @@
+#!/usr/bin/env python
+
 import sys
 import datetime
 import urllib
-# from xml import dom, parsers
 from xml.dom import minidom
 import xml.parsers.expat
 import psycopg2
 import json
-
-days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
 ONE_DAY = datetime.timedelta(1)
 
