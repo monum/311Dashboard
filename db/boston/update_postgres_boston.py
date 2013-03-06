@@ -39,9 +39,12 @@ def compute_time_range(end_date=None, num_of_days=1):
     return (start,end)
 
 def get_requests(city, start, end):
-    """Retrieving service request data from the Open311 API"""
+    """
+        Retrieving service request data from a 311 endpoint, in this case
+        Boston's Open311 API
+    """
     
-    base_url = config['base_url'][city]
+    base_url = config['endpoint']
 
     query_args = {
                   'start_date' : start.isoformat() +'Z', 
@@ -60,6 +63,8 @@ def update_database(reqs):
         user=config['DATABASE']['user'])
     
     cur = conn.cursor()
+    
+    table_prefix = config['DATABASE']['table_prefix']
 
     count = 0
     
@@ -80,7 +85,7 @@ def update_database(reqs):
             cur.execute("""
                 SELECT 
                     service_request_id 
-                FROM boston_requests 
+                FROM """ + table_prefix + """requests 
                 WHERE service_request_id = %s
                 """, (req['service_request_id'],))
             
@@ -91,7 +96,7 @@ def update_database(reqs):
                 
                 # Might need to change this; assumes that the category didn't change.
                 cur.execute("""
-                    UPDATE boston_requests 
+                    UPDATE """ + table_prefix + """requests 
                     SET service_request_id=%(service_request_id)s, 
                         service_name=%(service_name)s, 
                         service_code=%(service_code)s,
@@ -110,7 +115,7 @@ def update_database(reqs):
                 
                 cur.execute("""
                     SELECT name 
-                    FROM boston_geoms 
+                    FROM """ + table_prefix + """geoms 
                     WHERE ST_INTERSECTS(geom, ST_SETSRID(ST_MakePoint((%s),(%s)), 4326))
                 """, (req['long'], req['lat']))
                 
@@ -123,7 +128,7 @@ def update_database(reqs):
                 else:
                     req['neighborhood'] = None
                 
-                categories = load_config_json('boston_taxonomy.json')
+                categories = config['taxonomy']
                 
                 if req['service_name'] in categories:
                     category = categories[req['service_name']]['category']
@@ -133,9 +138,10 @@ def update_database(reqs):
                                 
                 cur.execute("""
                     INSERT 
-                    INTO boston_requests (service_request_id, service_name, service_code, 
-                        description, status, lat, long, requested_datetime, 
-                        updated_datetime, address, media_url, neighborhood, category) 
+                    INTO """ + table_prefix + """requests (service_request_id, 
+                        service_name, service_code, description, status, 
+                        lat, long, requested_datetime, updated_datetime, 
+                        address, media_url, neighborhood, category) 
                     VALUES (%(service_request_id)s, %(service_name)s, %(service_code)s,
                         %(description)s, %(status)s, %(lat)s, %(long)s, 
                         %(requested_datetime)s, %(updated_datetime)s, %(address)s, 
@@ -167,7 +173,7 @@ if __name__ == '__main__':
         Rename the file to db_config.json.
     """
     
-    defaults = {'config': '../db_config.json', 
+    defaults = {'config': 'update_boston_config.json', 
                 'end_date': datetime.datetime.strftime(default_end_date,'%Y-%m-%d'), 
                 'num_of_days': 1}
 
@@ -192,10 +198,9 @@ if __name__ == '__main__':
         for day in xrange(num_of_days):
             print start.isoformat() + ' ' + end.isoformat()
             
-            response = get_requests('boston', start, end)
+            response = get_requests(config['city'], start, end)
             
             if response:
-                #parse_and_store_data(response, start)
                 update_database(response.json())
             else:
                 append_log('err_log.txt', 

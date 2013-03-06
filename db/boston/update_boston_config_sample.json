@@ -1,0 +1,25 @@
+{
+    "DATABASE":	{
+		"host": "localhost",
+		"user": "USER_NAME",
+		"password": "PASSWORD",
+		"db_name": "DB_NAME",
+		"table_prefix": "boston_"
+	},
+	
+	"city": "boston",
+	
+    "endpoint": "https://mayors24.cityofboston.gov/open311/v2/requests.json",
+	
+    "taxonomy" : {
+        "Pothole": {"category": "Sidewalk or Street"},
+        "Streetlight": {"category": "Sidewalk or Street"},
+        "Graffiti": {"category": "Defacement/Graffiti"},
+        "Pothole": {"category": "Sidewalk or Street"},
+        "Sidewalk Patch": {"category": "Sidewalk or Street"},
+        "Damaged Sign" : {"category": "Signs"},
+        "Roadway Plowing/Sanding" : {"category": "Snow"},
+        "Unshoveled Sidewalk": {"category": "Snow"},
+        "Other": {"category": "Other"}
+    }
+}
