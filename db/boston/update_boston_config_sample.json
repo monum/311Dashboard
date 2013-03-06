@@ -5,9 +5,9 @@
 		"password": "PASSWORD",
 		"db_name": "DB_NAME",
 		"table_prefix": "boston_"
-	},
+    },
 	
-	"city": "boston",
+    "city": "boston",
 	
     "endpoint": "https://mayors24.cityofboston.gov/open311/v2/requests.json",
 	
