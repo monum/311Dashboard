@@ -1,10 +1,10 @@
 {
     "DATABASE":	{
-		"host": "localhost",
-		"user": "USER_NAME",
-		"password": "PASSWORD",
-		"db_name": "DB_NAME",
-		"table_prefix": "boston_"
+        "host": "localhost",
+        "user": "USER_NAME",
+        "password": "PASSWORD",
+        "db_name": "DB_NAME",
+        "table_prefix": "boston_"
     },
 	
     "city": "boston",
