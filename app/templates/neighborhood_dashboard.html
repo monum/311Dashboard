@@ -491,62 +491,6 @@
                 $("#closed-count").html(total_closed);   
             }
             
-            /*
-            function sortServiceList() {
-                d3.json('/stats/sr_counts', function(counts) {
-                    sr_counts_by_date = counts; // cache this
-                    
-                    // date_range is already set
-                                        
-                    var groups = [];
-                    
-                    for (var date in date_range) {
-                        //console.log(date);
-                        
-                        for (var group in sr_counts_by_date[date_range[date]]) {
-                            if (groups[group]) {
-                                groups[group] += sr_counts_by_date[date_range[date]][group];
-                            } else {
-                                groups[group] = sr_counts_by_date[date_range[date]][group]
-                            }                        
-                        }    
-                    }
-                    
-                    // fix this: http://wolfram.kriesing.de/blog/index.php/2008/javascript-sort-object-by-a-value
-                    var sortable = [];
-                    
-                    for (var group in groups) {
-                        sortable.push([group,groups[group]]);
-                    }
-                    
-                    sortable.sort(function(a,b) { return b[1] - a[1] });
-                    
-                    //console.log(sortable);
-                    
-                    var type_conversion ={'Sidewalk or Street': 'ss', 'Garbage': 'garbage', 'Defacement / Graffiti': 'graffiti',
-                        'Sewage': 'sewage', 'Vehicles': 'vehicle', 'Water': 'water', 'Trees': 'trees'};
-                    
-                    var types = ['ss','garbage','graffiti','sewage','vehicle','water','trees'];
-                    
-                    var order = [];
-                    for (var i=0; i < sortable.length; i++) {
-                        order.push(type_conversion[sortable[i][0]]);
-                    }
-                    
-                    for (var i=0; i < types.length; i++) {
-                        if (order.indexOf(types[i]) == -1) {
-                            order.push(types[i]);
-                        }
-                    }
-                    
-                    for (var i=order.length-2; i > 0; i--) {
-                        $('#' + order[i]).insertBefore('#' + order[i+1]);
-                    }
-                                        
-                    //return order;
-                });         
-            }
-            */
             var lazyLoad = _.debounce(resetMap, 50);
             
             function draw_bar_chart(path) {
